@@ -1,0 +1,41 @@
+.app {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.addtaskContainer {
+    min-height: 20vh;
+    margin-top: 1.5rem;
+    padding: 3rem;
+    min-width: 85vw;
+    background-color: rgba(0, 0, 0, 0.812);
+    border-radius: 1rem;
+}
+
+.head {
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.submitBtn {
+    margin-top: 1.5rem;
+}
+
+.tasksList {
+    margin-top: 5rem;
+    color: white;
+    min-width: 95vw;
+    text-align: center;
+    border-radius: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.799);
+    min-height: 20vh;
+}
+
+.tasksContainer {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
