@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 
 // address : 0x05c4e5be145409Bc48b1686B8E56751b2DcD3810
 const contractAddress = "0xc4955914F1bDa695e3746257d58399c042D8a43c";
-const provider = new ethers.providers.Web3Provider(window.ethereum);
+const provider = new ethers.providers.Web3Provider(window.ethereum) || null;
 const abi = ["function mint( address _recepient, string memory _hash) public"];
 const contract = new ethers.Contract(contractAddress, abi, provider);
 const signer = contract.connect(provider.getSigner());
