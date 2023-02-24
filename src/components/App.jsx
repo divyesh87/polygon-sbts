@@ -6,10 +6,12 @@ import AppCss from "../styles/App.module.css";
 import axios from "axios";
 import { ethers } from "ethers";
 
-// address : 0x05c4e5be145409Bc48b1686B8E56751b2DcD3810
-const contractAddress = "0xc4955914F1bDa695e3746257d58399c042D8a43c";
+const contractAddress = "0xC096908799F7c23ef33b4499500Fc4a25c5bC53B";
 const provider = new ethers.providers.Web3Provider(window.ethereum) || null;
-const abi = ["function mint( address _recepient, string memory _hash) public"];
+const abi = [
+  "function mint( address _recepient, string memory _hash) public",
+  " function getHash(address key) public view returns(string memory)",
+];
 const contract = new ethers.Contract(contractAddress, abi, provider);
 const signer = contract.connect(provider.getSigner());
 const jwt =
@@ -19,6 +21,8 @@ function App() {
   const [selectedFile, setselectedFile] = useState();
   const [address, setaddress] = useState();
   const [activeAcc, setactiveAcc] = useState(false);
+  const [search, setsearch] = useState("");
+  const [hash, sethash] = useState("");
 
   async function PinToIpfs(e) {
     e.preventDefault();
@@ -47,8 +51,8 @@ function App() {
           },
         }
       );
-      console.log(res.data);
       ipfsHash = res.data.IpfsHash;
+      console.log(ipfsHash);
       mint(ipfsHash);
     } catch (error) {
       console.log(error);
@@ -75,10 +79,18 @@ function App() {
     }
   }
 
+  async function handleSearch(e) {
+    e.preventDefault();
+    // setsearch("")
+    const res = await contract.getHash(search);
+    sethash(res);
+    console.log(res);
+  }
+
   return (
     <div className={AppCss.app}>
       {activeAcc ? (
-        <div className={AppCss.acc}>{activeAcc.slice(0,15)}....</div>
+        <div className={AppCss.acc}>{activeAcc.slice(0, 15)}....</div>
       ) : (
         <Button className={AppCss.wallet} onClick={connect}>
           Connect wallet
@@ -91,11 +103,13 @@ function App() {
           <input
             className={AppCss.file}
             type="file"
+            required
             onChange={(e) => setselectedFile(e.target.files[0])}
           />
           <Form.Control
             className={AppCss.recep}
             placeholder="Enter receipient address"
+            required
             onChange={(e) => setaddress(e.target.value)}
           />
           <Button
@@ -107,6 +121,33 @@ function App() {
             Mint
           </Button>
         </Form>
+      </div>
+
+      <div className={AppCss.lookup}>
+        <Form>
+          <Form.Control
+            className={AppCss.recep}
+            placeholder="Search for address"
+            required
+            value={search}
+            onChange={(e) => setsearch(e.target.value)}
+          />
+          <Button
+            className={AppCss.submitBtn}
+            type="submit"
+            variant="primary"
+            onClick={(e) => handleSearch(e)}
+          >
+            Search
+          </Button>
+        </Form>
+        {hash ? (
+          <div style={{ color: "white", marginTop: "1rem" }}><a href={`https://gateway.pinata.cloud/ipfs/${hash}`}>Click to see requested doc</a></div>
+        ) : (
+          <div style={{ color: "white", marginTop: "1rem" }}>
+            No record found
+          </div>
+        )}
       </div>
     </div>
   );
